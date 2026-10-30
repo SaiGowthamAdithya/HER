@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Letters For You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+/* Layout: one narrow centered column inside a fixed green + gold frame; rolled scrolls that unroll on tap. */
+:root {
+  --butter: #FBF1C4;
+  --butter-lit: #FFF9DE;
+  --paper: #FFFAE0;
+  --green-deep: #1D5237;
+  --green: #3D7A4D;
+  --gold: #D4A72C;
+  --gold-lit: #F0D56B;
+  --ink: #2A3B2B;
+  --ink-soft: #55684F;
+  --font-script: "Pinyon Script", "Snell Roundhand", cursive;
+  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-label: "Jost", "Helvetica Neue", Arial, sans-serif;
+  --frame: 14px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: radial-gradient(120% 80% at 50% 0%, var(--butter-lit), var(--butter) 70%);
+  background-color: var(--butter);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 20px;
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-block: calc(var(--frame) + 40px) 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body.locked { overflow: hidden; height: 100vh; }
+
+/* ---------- frame ---------- */
+.frame {
+  position: fixed;
+  inset: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  border: var(--frame) solid var(--green-deep);
+  pointer-events: none;
+  z-index: 40;
+}
+.frame::before {
+  content: ""; position: absolute; inset: 6px;
+  border: 2px solid var(--gold);
+  outline: 1px solid var(--gold-lit);
+  outline-offset: 3px;
+}
+.frame i {
+  position: absolute; width: 22px; height: 22px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  border: 3px solid var(--green-deep);
+}
+.frame i:nth-child(1) { top: -20px; left: -20px; }
+.frame i:nth-child(2) { top: -20px; right: -20px; }
+.frame i:nth-child(3) { bottom: -20px; left: -20px; }
+.frame i:nth-child(4) { bottom: -20px; right: -20px; }
+
+/* ---------- gate ---------- */
+.gate {
+  position: fixed; inset: 0; z-index: 30;
+  background: radial-gradient(90% 70% at 50% 30%, var(--butter-lit), var(--butter));
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 28px;
+  text-align: center;
+  transition: opacity 0.9s ease, visibility 0.9s;
+}
+.gate.gone { opacity: 0; visibility: hidden; }
+.gate-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; max-width: 420px; }
+.label {
+  font-family: var(--font-label); font-weight: 400; font-size: 12px;
+  letter-spacing: 0.32em; text-transform: uppercase; color: var(--green);
+}
+.script { font-family: var(--font-script); font-weight: 400; color: var(--green-deep); line-height: 1.1; margin: 0; }
+.gate h1 { font-size: clamp(56px, 16vw, 84px); }
+.gate p { margin: 0; color: var(--ink-soft); font-style: italic; font-size: 21px; }
+.seal-btn {
+  margin-top: 14px;
+  width: 112px; height: 112px; border-radius: 50%;
+  border: 0; cursor: pointer; position: relative;
+  background: radial-gradient(circle at 35% 30%, var(--green), var(--green-deep) 75%);
+  box-shadow: 0 0 0 5px var(--gold), 0 0 0 7px var(--green-deep), 0 14px 26px rgba(29, 82, 55, 0.35);
+  color: var(--gold-lit);
+  font-family: var(--font-label); font-size: 12px; letter-spacing: 0.26em; text-transform: uppercase;
+  display: grid; place-items: center;
+  transition: transform 0.3s ease;
+}
+.seal-btn:hover { transform: scale(1.05); }
+.seal-btn:active { transform: scale(0.97); }
+.seal-btn svg { width: 34px; height: 34px; fill: var(--gold-lit); display: block; margin-bottom: 4px; }
+.seal-btn span { display: block; }
+.seal-inner { display: flex; flex-direction: column; align-items: center; }
+
+/* ---------- header ---------- */
+main { max-width: 640px; margin-inline: auto; display: flex; flex-direction: column; gap: 56px; }
+.hero { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; padding-top: 12px; }
+.hero h2 { font-size: clamp(54px, 15vw, 78px); }
+.hero p { margin: 0; max-width: 30ch; font-style: italic; color: var(--ink-soft); font-size: 22px; text-wrap: balance; }
+.divider { display: flex; align-items: center; gap: 12px; color: var(--gold); width: min(260px, 70%); }
+.divider::before, .divider::after { content: ""; height: 1px; flex: 1; background: linear-gradient(90deg, transparent, var(--gold)); }
+.divider::after { background: linear-gradient(270deg, transparent, var(--gold)); }
+.divider b { width: 9px; height: 9px; background: var(--gold); transform: rotate(45deg); display: block; }
+
+.group { display: flex; flex-direction: column; gap: 18px; }
+.group-title { text-align: center; display: flex; flex-direction: column; gap: 6px; align-items: center; margin-bottom: 6px; }
+.group-title h3 { font-size: 40px; }
+
+/* ---------- scrolls ---------- */
+.scroll { display: flex; flex-direction: column; }
+.rod {
+  height: 18px; border-radius: 9px; position: relative; z-index: 2;
+  background: linear-gradient(180deg, var(--gold-lit), var(--gold) 45%, #A98216 100%);
+  box-shadow: 0 3px 8px rgba(29, 82, 55, 0.25);
+}
+.rod::before, .rod::after {
+  content: ""; position: absolute; top: -3px; bottom: -3px; width: 14px; border-radius: 7px;
+  background: linear-gradient(180deg, var(--green), var(--green-deep));
+}
+.rod::before { left: -6px; }
+.rod::after { right: -6px; }
+
+.scroll-head {
+  all: unset; box-sizing: border-box; cursor: pointer;
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 22px 16px 16px;
+  min-height: 76px;
+  border-radius: 40px;
+  background: linear-gradient(180deg, var(--gold-lit) 0%, var(--gold) 50%, #B28A1B 100%);
+  box-shadow: 0 8px 18px rgba(29, 82, 55, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  position: relative; z-index: 2;
+  transition: transform 0.25s ease, border-radius 0.4s ease, box-shadow 0.25s ease;
+}
+.scroll-head:hover { transform: translateY(-2px); }
+.scroll-head:focus-visible { outline: 3px solid var(--green-deep); outline-offset: 4px; }
+.scroll.open .scroll-head { border-radius: 18px 18px 6px 6px; }
+.scroll-head .wax {
+  flex: none; width: 46px; height: 46px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--green), var(--green-deep) 80%);
+  box-shadow: 0 0 0 3px var(--gold-lit), 0 0 0 4px var(--green-deep);
+  display: grid; place-items: center; color: var(--gold-lit);
+  font-family: var(--font-serif); font-weight: 600; font-size: 24px; line-height: 1;
+}
+.wax svg { width: 22px; height: 22px; fill: var(--gold-lit); }
+.head-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.head-text strong { font-weight: 600; font-size: 23px; line-height: 1.2; color: var(--green-deep); text-wrap: balance; }
+.head-text small { font-family: var(--font-label); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(29, 82, 55, 0.75); margin-top: 3px; }
+.chev { flex: none; width: 14px; height: 14px; border-right: 3px solid var(--green-deep); border-bottom: 3px solid var(--green-deep); transform: rotate(45deg) translate(-2px, -2px); transition: transform 0.4s ease; }
+.scroll.open .chev { transform: rotate(225deg) translate(-2px, -2px); }
+
+.scroll-body {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows 0.9s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.scroll.open .scroll-body { grid-template-rows: 1fr; }
+.scroll-clip { overflow: hidden; min-height: 0; }
+.paper {
+  margin-inline: 14px;
+  background:
+    linear-gradient(180deg, rgba(212, 167, 44, 0.16), transparent 14%, transparent 86%, rgba(212, 167, 44, 0.16)),
+    var(--paper);
+  border-inline: 2px solid var(--gold);
+  box-shadow: inset 0 0 0 6px var(--paper), inset 0 0 0 7px rgba(61, 122, 77, 0.45), 0 10px 24px rgba(29, 82, 55, 0.15);
+  padding: 34px 30px 30px;
+  opacity: 0; transform: translateY(-14px);
+  transition: opacity 0.7s ease 0.25s, transform 0.7s ease 0.25s;
+}
+.scroll.open .paper { opacity: 1; transform: none; }
+.paper h4 { font-family: var(--font-script); font-weight: 400; font-size: 38px; color: var(--green-deep); margin: 0 0 14px; line-height: 1.15; }
+.paper p { margin: 0 0 1em; font-size: 21px; line-height: 1.7; }
+.paper .sign { font-family: var(--font-script); font-size: 34px; color: var(--green-deep); text-align: right; margin: 10px 0 0; line-height: 1.2; }
+.paper .answer-label { font-family: var(--font-label); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--green); margin: 0 0 12px; display: block; }
+.scroll-foot { margin-top: -2px; }
+.scroll-foot .rod { margin-inline: 8px; }
+.scroll-foot-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.9s cubic-bezier(0.25, 0.8, 0.25, 1); }
+.scroll.open .scroll-foot-wrap { grid-template-rows: 1fr; }
+.scroll-foot-wrap > div { overflow: hidden; min-height: 0; }
+
+/* photo */
+.photo { margin: 6px auto 22px; max-width: 360px; padding: 12px 12px 14px; background: #fff; border: 1px solid var(--gold); box-shadow: 0 8px 20px rgba(29, 82, 55, 0.2); transform: rotate(-1.6deg); }
+.photo img { display: block; width: 100%; height: auto; }
+.photo figcaption { font-family: var(--font-script); font-size: 28px; color: var(--green-deep); text-align: center; padding-top: 8px; line-height: 1.2; }
+.photo-empty {
+  aspect-ratio: 4 / 5; display: grid; place-items: center; text-align: center; padding: 20px;
+  border: 2px dashed var(--gold); color: var(--ink-soft); font-style: italic; font-size: 19px;
+  background: repeating-linear-gradient(45deg, var(--paper), var(--paper) 10px, #FFF3C2 10px, #FFF3C2 20px);
+}
+
+/* ---------- music toggle ---------- */
+.music {
+  position: fixed; z-index: 45;
+  top: calc(env(safe-area-inset-top, 0px) + var(--frame) + 14px);
+  right: calc(env(safe-area-inset-right, 0px) + var(--frame) + 14px);
+  all: unset; box-sizing: border-box; cursor: pointer;
+  width: 46px; height: 46px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--green-deep); color: var(--gold-lit);
+  box-shadow: 0 0 0 3px var(--gold), 0 6px 14px rgba(29, 82, 55, 0.3);
+}
+.music { position: fixed; z-index: 45; top: calc(env(safe-area-inset-top, 0px) + var(--frame) + 16px); right: calc(env(safe-area-inset-right, 0px) + var(--frame) + 16px); }
+.music:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+.music svg { width: 22px; height: 22px; fill: var(--gold-lit); }
+.music .off { display: none; }
+.music.muted .on { display: none; }
+.music.muted .off { display: block; }
+.music[hidden] { display: none; }
+
+footer { text-align: center; color: var(--ink-soft); font-style: italic; font-size: 19px; }
+
+@media (max-width: 480px) {
+  body { font-size: 19px; }
+  .paper { padding: 28px 20px 24px; }
+  .paper p { font-size: 20px; }
+  .head-text strong { font-size: 21px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-body, .scroll-foot-wrap, .paper, .chev, .gate, .scroll-head, .seal-btn { transition: none; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<div class="gate" id="gate">
+  <div class="gate-inner">
+    <span class="label">A little something</span>
+    <h1 class="script" id="gate-name">for you</h1>
+    <p>Turn the sound on and tap the seal.</p>
+    <button class="seal-btn" id="open-btn" type="button" aria-label="Open">
+      <span class="seal-inner">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.2 3 4.5 6.6 4.5c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.6 0 5.7 3.7 4.2 7.3C19.5 16.4 12 21 12 21z"/></svg>
+        <span>Open</span>
+      </span>
+    </button>
+  </div>
+</div>
+
+<button class="music muted" id="music" type="button" aria-label="Turn music on" hidden>
+  <svg class="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v11.3A3.5 3.5 0 1 0 11 17.5V7.2l8-1.6v7.7a3.5 3.5 0 1 0 2 3.2V2z"/></svg>
+  <svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v11.3A3.5 3.5 0 1 0 11 17.5V7.2l5-1v4.4L20 14V2L9 3zM3.3 2.3 2 3.6l19 19 1.3-1.3z"/></svg>
+</button>
+
+<main>
+  <section class="hero">
+    <span class="label">Made only for</span>
+    <h2 class="script" id="hero-name">you</h2>
+    <div class="divider"><b></b></div>
+    <p id="hero-line"></p>
+  </section>
+
+  <section class="group" aria-labelledby="letters-title">
+    <div class="group-title">
+      <span class="label">Tap a scroll to unroll it</span>
+      <h3 class="script" id="letters-title">Three letters</h3>
+    </div>
+    <div id="letters" class="group" style="gap: 28px"></div>
+  </section>
+
+  <section class="group" aria-labelledby="questions-title">
+    <div class="group-title">
+      <span class="label">Think of your answer, then tap</span>
+      <h3 class="script" id="questions-title">Three questions</h3>
+    </div>
+    <div id="questions" class="group" style="gap: 28px"></div>
+  </section>
+
+  <footer id="footer"></footer>
+</main>
+
+<audio id="song" loop preload="auto"></audio>
+
+<script>
+/* ======================================================
+   EDIT HERE: everything personal lives in this one block.
+   ====================================================== */
+const SITE = {
+  herName: "My Love",
+  heroLine: "I wrote these for you, in my own words. Open them.",
+  footer: "Made with all my heart, just for you.",
+  songSrc: "song.mp3",
+  photoSrc: "photo.jpg",
+  photoCaption: "Us, my favourite memory i said Us because You are Me and I am You",
+  sign: "Always yours"
+};
+
+const LETTERS = [
+  {
+    title: "Open this first",
+    text: "podhu podhune vedi message enti raa babu anukunnara hmm parledhu lee naku alavatu ayyindhi mmadam gari tho anipinchukodam \nnaku correct gaa ye roju anedhi teledhu kani chusindhi matram Kamakshi ammavari temple lo yellow saree green border appudu chinna pilla laa bale unnav cute gaa muddhu gaa ippudu kuda alane unnav kani appudu inka bagunnav ippudu kuda bagunnav \nadhi kadhu asalu naa paatiki nenu movie chusthu unna kani nuvu pettina messages ki reply ivvali anipinchindhi andhuke ventane movie lo nunchi bayataki vacha because for you\ninka matter enti ante aa roju ninu chuska ela ante\nBangaram\n\nAa roju gudiki vachindi devudini choodataaniko,\nLeka naa adrushtam naaku eduruga nilabadataaniko naaku teliyadu…\n\nKaani nuvvu aa cheera kattukoni naa kallamundu nilichina kshanam,\nNaa chuttu unna prapancham antha okkasaariga nishabdam aipoyindi.\n\nNityam choose nee roopame ayinaa,\nAa roju maatram edo kottha andham kanipinchindi…\nRoju choose vennelane ayinaa,\nPournami naadu choosinappudu kalige aanandam laa undi nee darshanam.\n\nAa cheera nee andhaanni alankarinchindo,\nLeka nee andham aa cheerake oka kottha andhaanni ichindo…\nNaaku teliyadu bangaram.\n\nKaani aa kshanamlo,\nNee nadakalo oka sangeetham vinipinchindi,\nNee chirunavvulo oka vennela virisindi,\nNee choopulo enno kathalu kanipinchayi,\nNinnu choosthunna naa kallalo maatram\nNuvvu tappa inkemee kanipinchaledu.\n\nGalilo shabdhalu moguthunnayi…\nDeepaalu veluguthunnayi…\nPoojala mantralu vinipisthunnayi…\nKaani naa manasu maatram\nNee roopaanne oka praarthanalaa japistondi.\n\nDevudini korukune vela kooda,\nNaa manasulo medilina modati korika nuvve…\nNee andham mundu poola maala kooda chinnaboyinattu anipinchindi,\nNee chirunavvu mundu deepaala velugu kooda velavelaboyinattu anipinchindi.\n\nNinnu alaa choosthu,\nOka vishayam arthamayyindi…\n\n**Prema ante prathi roju kalisi undatam maatrame kaadhu,\nOka manishini choosina konni kshanalu,\nMana jeevitham anthaa gurtundipoye anubhoothuluga maaripovadam kooda prema.**\n\nAa roju nuvvu kattukunna cheera,\nNee jadalo aa andham,\nNee mukham meeda aa chirunavvu…\nIppatiki naa gundelo cherigiponi oka chitranga nilichipoyaayi.\n\nNinnu enni saarlu choosinaa,\nAa roju choosina tholi choopu laanti anubhoothi malli raadhemo…\n\nEndhukante bangaram…\n\n**Aa roju gudilo nuvvu devudini darshinchukunnavo emo…\nKaani nenu maatram naa jeevithamlo marichipoleni andhaanni naa anandha devathani darshinchukunnaanu.**\n\nNuvvu naa pakkana unnaavani kaadhu,\nNuvvu naa sontham ani kaadhu…\nNinnu alaa choodagaligina aa okka kshanam chaalu…\n\nNaa prema entha andhamainadho,\nNaa manasuki marosari teliyadaaniki\n\nAndaru gudilo devudini darshinchukuntaaru bangaram… kaani aa roju naa kallaku nuvvu kanipinchina teeru, naa manasuku oka divya darshanamlaa migilipoyindi\n\ninkaa taruwatha vishayam ki vasthey \n\nokavela nenu ee Kanchipuram ki rakapothe vere laga untunde kadha mi life ani annav\nhasini asalu repu anedhi ela untundho manam uhinchalem alatidhi jarigi poina dhani gurinchi alochinchi rakapothe ani endhuku anukovadam okavela nuvu naa life loki rakudadhu ani rasi petti unte adhe jarigedhi kani ala jaragaledhu ante dhani ardham enti manam kalavali ani\nsee yevvaru yevvari life loki orke raru okka vela orke vachhina adhe pani gaa inni nellalu tharapadi ilaa messages chesthu cheppali anukoru ardham ayyindha kani chepthunna ante what they felt about you is real and ninu kalavadam is destiny what i personally think is iddarini kalapadam ante oakariki okarini yedhuraiyyela cheyadam is destiny part and aa taruwatha kalisi undala leka vadhulukovala anedhi mana chethiloo untundhi its up to us and naku ni vishayam loo anipinchindhi its a real feeling which i have never felt for anyone else in this world and which i can never be able to feel again for anyone else because its a feeling that i felt only with you and for you \n\n\ninkaa taruwatha vishayam ki vasthey\n\nnenu andharu ammayilu laga ne ani annav see\n\nSometimes, I wish you could borrow my eyes for just a moment. Not to see how beautiful you look, but to understand how beautifully you exist.\n\nPerhaps then you would understand why the smallest things about you mean so much to me. Why a little detail you might forget becomes something I remember. Why your happiness matters to me even when I have nothing to do with it. And why I never want you to feel that you must become someone else to be worthy of being loved.\n\nI wonder if you realise that there is an entire world within you that you have never properly appreciated. A world made of your little habits, your thoughts, your imperfections, your dreams, your stubbornness, your laughter and even those moments when you don't know what to feel.\n\nI don't want to love you only when life makes you easy to understand. I want to have the patience to understand you when even you cannot understand yourself.\n\nI want to know what makes your eyes light up, what quietly breaks your heart, what dreams you are afraid to speak aloud and what little things make an ordinary day extraordinary for you.\n\nI don't want you to feel that you have to explain every silence or apologise for every difficult day. You are allowed to be tired. You are allowed to change. You are allowed to have dreams that don't include me. You are allowed to be your own person.\n\nAnd I hope that, if I ever become a part of your life, my love never makes you feel smaller. I hope it gives you more room to become everything you wish to be.\n\nThere is something I want you to know.\n\nIf I could meet you a thousand times in a thousand different circumstances, I would never expect you to be the same person in every lifetime. You could change your dreams, your interests, your opinions, even the way you see the world.\n\nI would still want to discover who you have become.\n\nBecause I am not in love with a particular version of you that I wish to preserve. I am in love with the privilege of knowing you as you are, and allowing you the freedom to become who you are meant to be.\n\nAnd perhaps, when we are old enough to forget a few things, I hope I still remember the little details about you that you never thought anyone would notice.\n\nNot because I was trying to memorise you, but because somewhere along the way, paying attention to you became one of my favourite things.\n\nI don't want to be the person who tells you how wonderful you are every day. I want to be the person beside whom you eventually realise that you never needed to be anything other than yourself to be wonderful.\n\n\nfor me you are The ONE out of four billion one hundred twenty-nine million nine hundred ninety-nine thousand nine hundred ninety-nine \n\ninkaa taruwatha vishayam ki vasthey\n\nadhe antunna nenu lekapothey mi life vere laga untadhi ani annav\n\nyes nijamee because naa life nuvu rakamundhu baledhu ani cheppanu ala ani bagundhi ani kuda kadhu kani baledhu ante nenu vere nuvu raka mundhu ninnu chudaka mundhu adhi vere life vadu eppudu godavalu padadam kopam tho undadam andaru vadini asayinchukodam vaditho evvaru matladakapodam adhi vadi avatharam valla kavochu ledha vadi character valla kavachu ledha rendu kavachu but vadu evvaritho kalise vadu kadhu and evvaru vaditho kalise vallu kadhu chala ontari vadu ala undedhi alanti time lo aa Kamakshi ammavari gudi lo naku nuvu devatha la kanipinchav nalo yedho marpu teskochav inka aa roju nunchi nenu marina theeru neeke telusu and memu ee Kanchipuram ki vachhe vallam kadhu kani vacham endhukante maa anna ikkade chadivadu so vadu chepthey maa chelli ni join chedham ani vachham kani devudu okkati decide chesadu \n\nnijaniki naa life lo kuda nuvve first person nenu love chesina vallalo \nnaa varaku idhe naa first love and i intend to keep it as my last too\n\nand yes nazar its real ee roju nunchi nenu mana gurinchi evvariki em cheppanu and ni gurinchi asalu evaritho em cheppanu because nazar lag rahi hai \nand i want to save my relationship with you nenu kapadukuntunna  \n\nand yes nenu chala ichha and nenu ichhina vatini eppudu lekka pettukonu because naku ivvadam matram ee telusu adhi yentha yenti anedhi naku anavasaram vallaki avasaram anipisthey adhi vallu adagaka poina ichesthanu adhi nenu and aa ammayi life lo untundho ledho teledhu ane prashna athani loo ledhu and radhu kuda endhukante situations em inaa kani athanu thanu okkati athani life lo ame undela athanu chesthadu and adhi movie akkada heroine mosam chesindhi kani ee ammayi ala kadhu adhi aa abbayiki telusu.\n\nYou are One in a billion\n\nYou are The ONE out of four billion one hundred twenty-nine million nine hundred ninety-nine thousand nine hundred ninety-nine."
+  },
+  {
+    title: "What I love about you",
+    text: "I love the way you care about people without making a show of it.\n\nI love your laugh, the way you get excited about small things, and the way you make me want to be a better person without ever asking me to be.\n\nYou are my favourite person to talk to, and my favourite person to be quiet with."
+  },
+  {
+    title: "A picture, and a promise",
+    photo: true,
+    text: "This is one of my favourite memories, and I wanted you to have it here.\n\nI promise to keep choosing you, on the easy days and the hard ones. I promise to listen, to show up, and to keep finding new ways to make you smile.\n\nThank you for being mine."
+  }
+];
+
+const QUESTIONS = [
+  {
+    q: "What is the first thing I think of when I think of you?",
+    a: "Your smile. It shows up in my head before anything else, and it always makes my day better."
+  },
+  {
+    q: "What is my favourite thing to do with you?",
+    a: "Anything, honestly. Doing nothing with you is better than doing something exciting with anyone else."
+  },
+  {
+    q: "What do I wish for us?",
+    a: "A lifetime of mornings together, a lot of laughter, and enough adventures that we run out of room to write them down."
+  }
+];
+
+/* ====================== code ====================== */
+const $ = (id) => document.getElementById(id);
+const heartSVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.2 3 4.5 6.6 4.5c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.6 0 5.7 3.7 4.2 7.3C19.5 16.4 12 21 12 21z"/></svg>';
+
+function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function paragraphs(t) { return t.split(/\n\s*\n+/).map((p) => "<p>" + esc(p.trim()).replace(/\*\*(.+?)\*\*/gs, "<strong>$1</strong>").replace(/\n/g, "<br>") + "</p>").join(""); }
+
+$("gate-name").textContent = "for " + SITE.herName;
+$("hero-name").textContent = SITE.herName;
+$("hero-line").textContent = SITE.heroLine;
+$("footer").textContent = SITE.footer;
+
+function photoHTML() {
+  if (SITE.photoSrc) {
+    return '<figure class="photo"><img src="' + esc(SITE.photoSrc) + '" alt="A photo of us"><figcaption>' + esc(SITE.photoCaption) + "</figcaption></figure>";
+  }
+  return '<figure class="photo"><div class="photo-empty">Your photo goes here</div><figcaption>' + esc(SITE.photoCaption) + "</figcaption></figure>";
+}
+
+function scrollHTML(id, waxInner, title, hint, bodyHTML) {
+  return (
+    '<article class="scroll" id="' + id + '">' +
+      '<button class="scroll-head" type="button" aria-expanded="false" aria-controls="' + id + '-body">' +
+        '<span class="wax">' + waxInner + "</span>" +
+        '<span class="head-text"><strong>' + esc(title) + "</strong><small>" + hint + "</small></span>" +
+        '<span class="chev" aria-hidden="true"></span>' +
+      "</button>" +
+      '<div class="scroll-body" id="' + id + '-body" role="region"><div class="scroll-clip"><div class="paper">' + bodyHTML + "</div></div></div>" +
+      '<div class="scroll-foot-wrap"><div><div class="scroll-foot"><div class="rod"></div></div></div></div>' +
+    "</article>"
+  );
+}
+
+$("letters").innerHTML = LETTERS.map((l, i) =>
+  scrollHTML("letter-" + i, heartSVG, l.title, "Tap to open",
+    "<h4>" + esc(l.title) + "</h4>" + (l.photo ? photoHTML() : "") + paragraphs(l.text) + '<p class="sign">' + esc(SITE.sign) + "</p>")
+).join("");
+
+$("questions").innerHTML = QUESTIONS.map((q, i) =>
+  scrollHTML("question-" + i, "?", q.q, "Tap to reveal",
+    '<span class="answer-label">My answer</span>' + paragraphs(q.a) + '<p class="sign">' + esc(SITE.sign) + "</p>")
+).join("");
+
+document.querySelectorAll(".scroll-head").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const scroll = btn.closest(".scroll");
+    const open = !scroll.classList.contains("open");
+    scroll.classList.toggle("open", open);
+    btn.setAttribute("aria-expanded", String(open));
+    const hint = btn.querySelector("small");
+    if (hint) hint.textContent = open ? "Tap to close" : (scroll.id.startsWith("letter") ? "Tap to open" : "Tap to reveal");
+  });
+});
+
+/* ---------- music ---------- */
+const audio = $("song");
+const musicBtn = $("music");
+let playing = false;
+let ctx = null, loopTimer = null, step = 0;
+
+/* Soft placeholder melody (Web Audio), used until a real song is attached. */
+const NOTES = [392.0, 493.88, 587.33, 659.25, 587.33, 493.88, 440.0, 523.25, 659.25, 783.99, 659.25, 523.25, 392.0, 440.0, 493.88, 587.33];
+function tick() {
+  if (!ctx) return;
+  const t = ctx.currentTime;
+  const f = NOTES[step % NOTES.length];
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = "sine"; o.frequency.value = f;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.07, t + 0.04);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(t); o.stop(t + 1.9);
+  if (step % 4 === 0) {
+    const b = ctx.createOscillator(), bg = ctx.createGain();
+    b.type = "triangle"; b.frequency.value = f / 2;
+    bg.gain.setValueAtTime(0, t);
+    bg.gain.linearRampToValueAtTime(0.05, t + 0.08);
+    bg.gain.exponentialRampToValueAtTime(0.0001, t + 3);
+    b.connect(bg); bg.connect(ctx.destination);
+    b.start(t); b.stop(t + 3.1);
+  }
+  step++;
+}
+
+function setUI(on) {
+  playing = on;
+  musicBtn.classList.toggle("muted", !on);
+  musicBtn.setAttribute("aria-label", on ? "Turn music off" : "Turn music on");
+}
+
+async function startMusic() {
+  try {
+    if (SITE.songSrc) {
+      await audio.play();
+    } else {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!ctx) ctx = new AC();
+      await ctx.resume();
+      if (!loopTimer) { tick(); loopTimer = setInterval(tick, 650); }
+    }
+    setUI(true);
+  } catch (e) { setUI(false); }
+}
+function stopMusic() {
+  try {
+    if (SITE.songSrc) audio.pause();
+    else if (ctx) { clearInterval(loopTimer); loopTimer = null; ctx.suspend(); }
+  } catch (e) {}
+  setUI(false);
+}
+if (SITE.songSrc) { audio.src = SITE.songSrc; audio.volume = 0.8; }
+
+musicBtn.addEventListener("click", () => (playing ? stopMusic() : startMusic()));
+
+$("open-btn").addEventListener("click", () => {
+  $("gate").classList.add("gone");
+  document.body.classList.remove("locked");
+  musicBtn.hidden = false;
+  startMusic();
+  window.scrollTo(0, 0);
+});
+document.body.classList.add("locked");
+</script>
+
+</body>
+</html>
